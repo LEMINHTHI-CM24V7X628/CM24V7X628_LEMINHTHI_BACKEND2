@@ -1,8 +1,9 @@
+// app.js
+
 const express = require("express");
 const cors = require("cors");
 const contactRouter = require("./app/routes/contact.route");
-// BỔ SUNG: Import ApiError để xử lý lỗi
-const ApiError = require("./api-error"); 
+const ApiError = require("./api-error"); // Đường dẫn đúng vì api-error.js nằm ở thư mục gốc
 
 const app = express();
 
@@ -15,17 +16,14 @@ app.get("/", (req, res) => {
 });
 app.use("/api/contacts", contactRouter);
 
-// BƯỚC 1 (Cuối cùng): Middleware xử lý lỗi 404 (Khi không tìm thấy Route)
-// Middleware này phải nằm sau tất cả các routes khác
+// BƯỚC 1: Middleware xử lý lỗi 404 (Route not found)
 app.use((req, res, next) => {
-    // Nếu request tới một route không tồn tại, tạo lỗi 404 và chuyển cho middleware tiếp theo
     return next(new ApiError(404, "Resource not found"));
 });
 
-// BƯỚC 2 (Cuối cùng): Middleware xử lý lỗi tập trung
-// Middleware này phải có 4 tham số (err, req, res, next)
+// BƯỚC 2: Middleware xử lý lỗi tập trung (TRẢ VỀ JSON)
 app.use((err, req, res, next) => {
-    // Phản hồi lỗi dưới dạng JSON
+    // Kiểm tra và trả về status code của ApiError (hoặc 500 mặc định)
     return res.status(err.statusCode || 500).json({
         message: err.message || "Internal Server Error",
     });

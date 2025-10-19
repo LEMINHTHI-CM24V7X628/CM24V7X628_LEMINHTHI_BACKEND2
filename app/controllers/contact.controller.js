@@ -1,7 +1,7 @@
-// app/controllers/contact.controller.js
 const ContactService = require("../services/contact.service");
 const MongoDB = require("../utils/mongodb.util");
-const ApiError = require("../api-error");
+const ApiError = require("../../api-error");
+               
 
 // POST /api/contacts
 exports.create = async (req, res, next) => {
@@ -27,12 +27,10 @@ exports.findAll = async (req, res, next) => {
         if (name) {
             documents = await contactService.findByName(name);
         } else {
-            // Lỗi của bạn xảy ra ở đây
             documents = await contactService.find({});
         }
         return res.send(documents);
     } catch (error) {
-        // Lỗi này được trả về từ khối catch
         return next(new ApiError(500, "An error occurred while retrieving contacts"));
     }
 };
