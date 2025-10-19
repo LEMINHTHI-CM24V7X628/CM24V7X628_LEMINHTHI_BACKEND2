@@ -1,15 +1,17 @@
+// app/utils/mongodb.util.js
+
 const { MongoClient } = require("mongodb");
-const config = require("../config");
 
-let client;
+class MongoDB {
+    // 1. Khai báo client là static property
+    static client = null; 
 
-async function connectDB() {
-  if (!client) {
-    client = new MongoClient(config.db.uri);
-    await client.connect();
-    console.log("✅ Kết nối MongoDB thành công!");
-  }
-  return client;
+    static connect = async (uri) => {
+        if (this.client) return this.client;
+        
+        // 2. Sử dụng await cho MongoClient.connect()
+        this.client = await MongoClient.connect(uri); 
+        return this.client;
+    };
 }
-
-module.exports = { connectDB };
+module.exports = MongoDB;
